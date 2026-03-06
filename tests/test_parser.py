@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from offie.core.parser import WorkflowParseError, load_workflow
 
 
@@ -117,4 +116,3 @@ workflow:
         load_workflow(path)
 
     assert "workflow.steps must be a list" in str(excinfo.value)
-

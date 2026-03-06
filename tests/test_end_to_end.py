@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from offie.cli import main
 
 
@@ -48,4 +47,3 @@ workflow:
     assert exit_code == 1
     assert "Workflow validation failed:" in captured.err
     assert "Unknown command 'unknown_command'" in captured.err
-

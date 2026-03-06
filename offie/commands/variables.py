@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
 from offie.core.context import Context
 from offie.core.models import Step
 
@@ -14,8 +12,8 @@ class SetVariableCommand(CommandWithEval):
     name = "set_variable"
     required_args = ["as"]
 
-    def validate(self, step: Step) -> List[str]:
-        errors: List[str] = []
+    def validate(self, step: Step) -> list[str]:
+        errors: list[str] = []
         if "as" not in step.args:
             errors.append("set_variable requires an 'as' argument")
         if "value" not in step.args:
@@ -30,4 +28,3 @@ class SetVariableCommand(CommandWithEval):
         else:
             value = raw_value
         context.set(target, value)
-

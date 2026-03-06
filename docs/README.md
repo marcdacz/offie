@@ -16,14 +16,13 @@ Entry point for Offie docs: quick links and command reference.
 
 Offie commands are grouped by purpose.
 
-- **Control flow**  
+- **Control flow**
   `if`, `while`, `for_each`, `for` – see [`commands/control-flow.md`](commands/control-flow.md).
 
-- **Variables and data**  
+- **Variables and data**
   `set_variable` – see [`commands/variables.md`](commands/variables.md).
 
-- **Output**  
+- **Output**
   `print` – see [`commands/output.md`](commands/output.md).
 
 As new command groups are added, create a new file under `commands/` and link it here.
-

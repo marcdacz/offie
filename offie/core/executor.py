@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, List, Optional
+from collections.abc import Iterable
+from typing import Any
 
 from offie.commands.registry import registry
+
 from .context import Context
 from .expressions import ExpressionEvaluator
-from .models import Parameter, Step, Workflow
+from .models import Step, Workflow
 
 
 class Executor:
@@ -13,13 +15,13 @@ class Executor:
     Executes a validated Workflow.
     """
 
-    def __init__(self, expression_evaluator: Optional[ExpressionEvaluator] = None) -> None:
+    def __init__(self, expression_evaluator: ExpressionEvaluator | None = None) -> None:
         self.expression_evaluator = expression_evaluator or ExpressionEvaluator()
 
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
-    def execute(self, workflow: Workflow, cli_parameters: Optional[Dict[str, Any]] = None) -> None:
+    def execute(self, workflow: Workflow, cli_parameters: dict[str, Any] | None = None) -> None:
         """
         Execute the workflow using the provided CLI parameter overrides.
         """
@@ -39,7 +41,7 @@ class Executor:
     # ------------------------------------------------------------------
     # Internals
     # ------------------------------------------------------------------
-    def _build_context(self, workflow: Workflow, cli_parameters: Dict[str, Any]) -> Context:
+    def _build_context(self, workflow: Workflow, cli_parameters: dict[str, Any]) -> Context:
         """
         Build the initial Context from workflow parameters and CLI overrides.
         """
@@ -47,12 +49,12 @@ class Executor:
         context = Context(workflow_name=workflow.name, workflow_file=workflow.source_path or "")
 
         # Apply workflow parameter defaults, overridden by CLI values.
-        defaults: Dict[str, Any] = {}
+        defaults: dict[str, Any] = {}
         for param in workflow.parameters:
             if param.default is not None:
                 defaults[param.name] = param.default
 
-        merged: Dict[str, Any] = {**defaults, **cli_parameters}
+        merged: dict[str, Any] = {**defaults, **cli_parameters}
 
         for name, value in merged.items():
             context.set(name, value)
@@ -71,4 +73,3 @@ class Executor:
         except Exception as exc:  # pragma: no cover - simple error wrapper
             msg = f"Error executing command '{step.command}': {exc}"
             raise RuntimeError(msg) from exc
-

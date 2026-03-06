@@ -1,6 +1,6 @@
 ## Offie
 
-Offie is a small Python tool that executes workflows defined in a simple YAML-based DSL so you can describe and run automation as readable YAML files.  
+Offie is a small Python tool that executes workflows defined in a simple YAML-based DSL so you can describe and run automation as readable YAML files.
 
 ---
 

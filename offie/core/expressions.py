@@ -7,7 +7,6 @@ from simpleeval import SimpleEval  # type: ignore[import]
 
 from .context import Context
 
-
 _TEMPLATE_PATTERN = re.compile(r"{{\s*([a-zA-Z_][\w\.]*)\s*}}")
 
 
@@ -37,4 +36,3 @@ class ExpressionEvaluator:
         names = context.as_expression_names()
         evaluator = SimpleEval(names=names)
         return evaluator.eval(prepared)
-

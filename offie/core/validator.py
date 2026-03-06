@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List
 
 from offie.commands.registry import BaseCommand, registry
+
 from .models import Step, Workflow
 
 
@@ -13,20 +13,20 @@ class ValidationError:
     message: str
 
 
-def validate_workflow(workflow: Workflow) -> List[ValidationError]:
+def validate_workflow(workflow: Workflow) -> list[ValidationError]:
     """
     Validate that the workflow only uses known commands and that each
     command receives the required arguments.
     """
 
-    errors: List[ValidationError] = []
+    errors: list[ValidationError] = []
 
     _validate_steps(workflow.steps, "steps", errors)
 
     return errors
 
 
-def _validate_steps(steps: List[Step], prefix: str, errors: List[ValidationError]) -> None:
+def _validate_steps(steps: list[Step], prefix: str, errors: list[ValidationError]) -> None:
     for index, step in enumerate(steps):
         location = f"{prefix}[{index}]"
 
@@ -49,4 +49,3 @@ def _validate_steps(steps: List[Step], prefix: str, errors: List[ValidationError
         for key, value in step.args.items():
             if isinstance(value, list) and value and isinstance(value[0], Step):
                 _validate_steps(value, f"{location}.{key}", errors)
-

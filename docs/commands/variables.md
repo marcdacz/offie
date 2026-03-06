@@ -37,4 +37,3 @@ steps:
     as: counter
   - print: "Counter is now {{counter}}"
 ```
-

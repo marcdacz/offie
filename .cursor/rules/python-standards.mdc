@@ -18,4 +18,3 @@ alwaysApply: false
 - Keep functions small and focused; extract helpers when logic becomes complex.
 - Name modules, classes, and functions descriptively; avoid abbreviations that are not obvious.
 - Favor pure functions where possible for core logic, and keep side effects at the edges.
-

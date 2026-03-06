@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -12,7 +12,7 @@ class Parameter:
     """
 
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     required: bool = False
     default: Any = None
 
@@ -24,7 +24,7 @@ class Step:
     """
 
     command: str
-    args: Dict[str, Any] = field(default_factory=dict)
+    args: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -34,8 +34,7 @@ class Workflow:
     """
 
     name: str
-    description: Optional[str]
-    parameters: List[Parameter] = field(default_factory=list)
-    steps: List[Step] = field(default_factory=list)
-    source_path: Optional[Path] = None
-
+    description: str | None
+    parameters: list[Parameter] = field(default_factory=list)
+    steps: list[Step] = field(default_factory=list)
+    source_path: Path | None = None

@@ -84,4 +84,3 @@ workflow:
         as: index
         do:
           - print: "Summary line {{index}} for {{team_name}} (started at {{start_timestamp}})"
-

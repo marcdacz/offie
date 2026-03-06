@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Mapping
-
+from typing import Any
 
 _TEMPLATE_START = "{{"
 _TEMPLATE_END = "}}"
@@ -19,8 +19,8 @@ class Context:
 
     workflow_name: str
     workflow_file: Path
-    _system: Dict[str, Any] = field(default_factory=dict, init=False, repr=False)
-    _workflow: Dict[str, Any] = field(default_factory=dict, repr=False)
+    _system: dict[str, Any] = field(default_factory=dict, init=False, repr=False)
+    _workflow: dict[str, Any] = field(default_factory=dict, repr=False)
 
     def __post_init__(self) -> None:
         now = datetime.now()
@@ -71,7 +71,7 @@ class Context:
     # ------------------------------------------------------------------
     # Template / expression support
     # ------------------------------------------------------------------
-    def as_expression_names(self) -> Dict[str, Any]:
+    def as_expression_names(self) -> dict[str, Any]:
         """
         Return the mapping used for expression evaluation.
 
@@ -79,7 +79,7 @@ class Context:
         workflow variables are exposed at the top level.
         """
 
-        names: Dict[str, Any] = {"sys": dict(self._system)}
+        names: dict[str, Any] = {"sys": dict(self._system)}
         names.update(self._workflow)
         return names
 
@@ -143,4 +143,3 @@ class Context:
                 raise KeyError(msg)
 
         return current
-

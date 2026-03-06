@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import Any, List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from offie.core.context import Context
 from offie.core.models import Step
-from .registry import BaseCommand, command
-from .utils import CommandWithEval
 
+from .registry import command
+from .utils import CommandWithEval
 
 if TYPE_CHECKING:  # pragma: no cover - type checking only
     from offie.core.executor import Executor
@@ -21,15 +21,15 @@ class IfCommand(CommandWithEval):
     # Condition is always provided as the primary value.
     required_args = ["value"]
 
-    def validate(self, step: Step) -> List[str]:
-        errors: List[str] = []
+    def validate(self, step: Step) -> list[str]:
+        errors: list[str] = []
         if "value" not in step.args:
             errors.append("if requires a condition value")
         if "then" not in step.args:
             errors.append("if requires a 'then' step list")
         return errors
 
-    def execute(self, step: Step, context: Context, executor: "Executor") -> None:
+    def execute(self, step: Step, context: Context, executor: Executor) -> None:
         condition = step.args["value"]
         result = bool(self._eval(condition, context, executor))
         branch_key = "then" if result else "else"
@@ -43,15 +43,15 @@ class WhileCommand(CommandWithEval):
     # Loop condition is always provided as the primary value.
     required_args = ["value", "do"]
 
-    def validate(self, step: Step) -> List[str]:
-        errors: List[str] = []
+    def validate(self, step: Step) -> list[str]:
+        errors: list[str] = []
         if "value" not in step.args:
             errors.append("while requires a condition value")
         if "do" not in step.args:
             errors.append("while requires a 'do' step list")
         return errors
 
-    def execute(self, step: Step, context: Context, executor: "Executor") -> None:
+    def execute(self, step: Step, context: Context, executor: Executor) -> None:
         condition = step.args["value"]
         body = step.args.get("do") or []
 
@@ -77,7 +77,7 @@ class ForCommand(CommandWithEval):
     name = "for"
     required_args = ["start", "end", "as", "do"]
 
-    def execute(self, step: Step, context: Context, executor: "Executor") -> None:
+    def execute(self, step: Step, context: Context, executor: Executor) -> None:
         start_expr = step.args["start"]
         end_expr = step.args["end"]
         var_name = step.args["as"]
@@ -96,14 +96,14 @@ class ForEachCommand(CommandWithEval):
     name = "for_each"
     required_args = ["value", "as", "do"]
 
-    def validate(self, step: Step) -> List[str]:
-        errors: List[str] = []
+    def validate(self, step: Step) -> list[str]:
+        errors: list[str] = []
         for arg in ("value", "as", "do"):
             if arg not in step.args:
                 errors.append(f"for_each requires a '{arg}' argument")
         return errors
 
-    def execute(self, step: Step, context: Context, executor: "Executor") -> None:
+    def execute(self, step: Step, context: Context, executor: Executor) -> None:
         items_expr = step.args["value"]
         var_name = step.args["as"]
         body = step.args.get("do") or []
@@ -112,4 +112,3 @@ class ForEachCommand(CommandWithEval):
         for item in items:
             context.set(var_name, item)
             executor.execute_steps(body, context)
-

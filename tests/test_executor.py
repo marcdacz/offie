@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from offie.core.executor import Executor
 from offie.core.models import Parameter, Step, Workflow
 
@@ -53,7 +52,9 @@ def execute_workflow__should_apply_cli_overrides__when_parameters_have_defaults(
     assert "Hello, Offie!" in captured.out
 
 
-def execute_step__should_raise_runtime_error__when_command_is_unknown(tmp_path: Path) -> None:
+def execute_step__should_raise_runtime_error__when_command_is_unknown(
+    tmp_path: Path,
+) -> None:
     workflow = Workflow(
         name="executor-unknown-command",
         description=None,
@@ -68,4 +69,3 @@ def execute_step__should_raise_runtime_error__when_command_is_unknown(tmp_path: 
         executor.execute(workflow)
 
     assert "Unknown command 'does_not_exist'" in str(excinfo.value)
-

@@ -30,3 +30,9 @@ python_files = ["test_*.py"]
 python_functions = ["*_should_*__when_*"]
 addopts = "-q"
 
+[tool.ruff]
+src = ["offie", "tests"]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

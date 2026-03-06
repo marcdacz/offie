@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import yaml  # type: ignore[import]
 
 from .models import Parameter, Step, Workflow
-
 
 _MODIFIER_KEYS = {"as", "do", "condition", "then", "else", "start", "end"}
 
@@ -52,19 +51,19 @@ def load_workflow(path: str | Path) -> Workflow:
     )
 
 
-def _parse_parameters(raw: Any) -> List[Parameter]:
+def _parse_parameters(raw: Any) -> list[Parameter]:
     if not raw:
         return []
     if not isinstance(raw, list):
         msg = "workflow.parameters must be a list"
         raise WorkflowParseError(msg)
 
-    params: List[Parameter] = []
+    params: list[Parameter] = []
     for item in raw:
         if not isinstance(item, dict) or len(item) != 1:
             msg = f"Invalid parameter entry: {item!r}"
             raise WorkflowParseError(msg)
-        (name, spec), = item.items()
+        ((name, spec),) = item.items()
         description = None
         required = False
         default = None
@@ -91,7 +90,7 @@ def _parse_parameters(raw: Any) -> List[Parameter]:
     return params
 
 
-def _parse_steps_list(raw: Any) -> List[Step]:
+def _parse_steps_list(raw: Any) -> list[Step]:
     if not raw:
         return []
     if not isinstance(raw, list):
@@ -111,7 +110,7 @@ def _parse_step(raw: Any) -> Step:
         msg = f"Could not determine command name for step: {raw!r}"
         raise WorkflowParseError(msg)
 
-    args: Dict[str, Any] = {}
+    args: dict[str, Any] = {}
     primary_value = raw.get(command_name)
 
     # Inline value or nested mapping.
@@ -137,9 +136,8 @@ def _parse_step(raw: Any) -> Step:
     return Step(command=command_name, args=args)
 
 
-def _detect_command_name(step_mapping: Dict[str, Any]) -> str | None:
+def _detect_command_name(step_mapping: dict[str, Any]) -> str | None:
     for key in step_mapping.keys():
         if key not in _MODIFIER_KEYS:
             return str(key)
     return None
-

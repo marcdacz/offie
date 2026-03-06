@@ -77,4 +77,3 @@ steps:
 
 - Prefer one main behavior per test. If you need to cover multiple scenarios,
   write separate tests following the naming convention.
-

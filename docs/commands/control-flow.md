@@ -53,7 +53,7 @@ Commands covered here:
 
 - **Inline value / `value`** (required): loop condition expression.
 - **`do`** (required): list of steps to execute on each iteration.
-- **`max_iterations`** (optional): maximum number of iterations before the loop fails.  
+- **`max_iterations`** (optional): maximum number of iterations before the loop fails.
   Defaults to `1000` to protect against infinite loops; increase cautiously if you expect a long‑running loop.
 
 ---
@@ -102,4 +102,3 @@ Commands covered here:
 - **`end`** (required): ending integer (exclusive).
 - **`as`** (required): variable name for the current index.
 - **`do`** (required): list of steps to run for each index.
-

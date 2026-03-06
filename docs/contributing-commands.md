@@ -64,6 +64,64 @@ pytest
 
 ---
 
+## Pre-commit hooks
+
+This repo uses [`pre-commit`](https://pre-commit.com/) to keep the codebase tidy and consistent. It uses a modern, minimal setup based on Ruff for both formatting and linting, plus a few lightweight sanity checks (YAML/TOML validation, trailing whitespace, etc.). Tests run as a pre-push hook so regular commits stay fast.
+
+### Installing pre-commit
+
+First, install `pre-commit` in your environment:
+
+```bash
+pip install pre-commit
+```
+
+Then install the hooks defined in `.pre-commit-config.yaml`:
+
+```bash
+pre-commit install
+pre-commit install --hook-type pre-push
+```
+
+- **`pre-commit install`**: runs the configured checks on every commit.
+- **`pre-commit install --hook-type pre-push`**: additionally runs the pre-push hooks (for example, `pytest`) whenever you push.
+
+### Running hooks manually
+
+You can also trigger the hooks manually, without committing:
+
+- **Run all hooks on all files** (useful right after cloning or updating the config):
+
+```bash
+pre-commit run --all-files
+```
+
+- **Run all hooks on staged files** (same as what happens on commit):
+
+```bash
+pre-commit run
+```
+
+- **Run a single hook by name** (for example, Ruff):
+
+```bash
+pre-commit run ruff --all-files
+# or only on staged files:
+pre-commit run ruff
+```
+
+- **Run pre-push hooks (for example, tests) without pushing:**
+
+```bash
+pre-commit run --hook-stage push --all-files
+# or, on staged/changed files only:
+pre-commit run --hook-stage push
+```
+
+If any hook fails, fix the reported issues and re-run the command (or your commit/push) until everything passes.
+
+---
+
 ## 4. Document the command
 
 Update documentation in these places:

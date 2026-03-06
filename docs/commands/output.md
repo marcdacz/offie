@@ -39,4 +39,3 @@ steps:
     as: name
   - print: "Hello, {{name}}!"
 ```
-

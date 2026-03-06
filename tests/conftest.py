@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest  # type: ignore[import]
-
 from offie.core.models import Step, Workflow
 
 
@@ -64,8 +63,7 @@ def make_step() -> Any:
     Helper to build Step instances for validation and execution tests.
     """
 
-    def _make(command: str, **args: Dict[str, Any]) -> Step:
+    def _make(command: str, **args: dict[str, Any]) -> Step:
         return Step(command=command, args=dict(args))
 
     return _make
-

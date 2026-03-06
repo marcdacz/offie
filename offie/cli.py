@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import argparse
 import sys
-from typing import Any, Dict, List
+from typing import Any
 
 from offie.core.executor import Executor
 from offie.core.parser import load_workflow
 from offie.core.validator import ValidationError, validate_workflow
 
 
-def _parse_parameter_overrides(values: List[str]) -> Dict[str, Any]:
-    overrides: Dict[str, Any] = {}
+def _parse_parameter_overrides(values: list[str]) -> dict[str, Any]:
+    overrides: dict[str, Any] = {}
     for raw in values:
         if "=" not in raw:
             msg = f"Invalid parameter override '{raw}', expected key=value"
@@ -38,7 +38,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = build_arg_parser()
     args = parser.parse_args(argv)
 
@@ -50,7 +50,7 @@ def main(argv: List[str] | None = None) -> int:
 
     workflow = load_workflow(args.workflow_file)
 
-    errors: List[ValidationError] = validate_workflow(workflow)
+    errors: list[ValidationError] = validate_workflow(workflow)
     if errors:
         print("Workflow validation failed:", file=sys.stderr)
         for err in errors:
@@ -69,4 +69,3 @@ def main(argv: List[str] | None = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
-

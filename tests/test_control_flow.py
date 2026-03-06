@@ -7,7 +7,9 @@ from offie.core.executor import Executor
 from offie.core.models import Step, Workflow
 
 
-def run_if_command__should_execute_then_branch__when_condition_is_true(tmp_path: Path) -> None:
+def run_if_command__should_execute_then_branch__when_condition_is_true(
+    tmp_path: Path,
+) -> None:
     context = Context(workflow_name="if-then", workflow_file=tmp_path / "inline.yml")
     context.set("flag", True)
 
@@ -43,7 +45,9 @@ def run_if_command__should_execute_then_branch__when_condition_is_true(tmp_path:
     assert context.get("result") == "then-branch"
 
 
-def run_if_command__should_execute_else_branch__when_condition_is_false(tmp_path: Path) -> None:
+def run_if_command__should_execute_else_branch__when_condition_is_false(
+    tmp_path: Path,
+) -> None:
     context = Context(workflow_name="if-else", workflow_file=tmp_path / "inline.yml")
     context.set("flag", False)
 
@@ -79,7 +83,9 @@ def run_if_command__should_execute_else_branch__when_condition_is_false(tmp_path
     assert context.get("result") == "else-branch"
 
 
-def run_while_command__should_repeat_body__when_condition_remains_true(tmp_path: Path) -> None:
+def run_while_command__should_repeat_body__when_condition_remains_true(
+    tmp_path: Path,
+) -> None:
     context = Context(workflow_name="while-loop", workflow_file=tmp_path / "inline.yml")
     context.set("i", 0)
 
@@ -173,4 +179,3 @@ def run_for_each_command__should_execute_body_for_each_item__when_iterable_is_li
     executor.execute_steps(workflow.steps, context)
 
     assert context.get("last") == 3
-
