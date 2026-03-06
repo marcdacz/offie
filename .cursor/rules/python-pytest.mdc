@@ -1,0 +1,31 @@
+---
+description: Pytest usage conventions for offie
+globs: **/tests/**/*.py
+alwaysApply: false
+---
+
+# Pytest Conventions (offie)
+
+## Framework
+
+- Use **pytest** with plain test functions (no unittest classes).
+- Use `pytest.raises` for error cases instead of manual try/except.
+
+## Fixtures
+
+- Prefer small, focused fixtures for shared setup.
+- Keep fixture scope as narrow as practical (often function scope).
+- Avoid large implicit `autouse` fixtures that hide behavior.
+
+## Parametrization
+
+- Use `@pytest.mark.parametrize` for simple input/output tables.
+
+```python
+@pytest.mark.parametrize("raw,expected", [("a", 1), ("b", 2)])
+def parse__should_return_code__for_known_values(raw, expected):
+    ...
+```
+
+- Keep parametrized cases readable; split into separate tests if logic diverges.
+

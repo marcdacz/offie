@@ -1,0 +1,80 @@
+---
+description: Python testing conventions for offie, including naming and fixture style
+globs: **/tests/**/*.py
+alwaysApply: false
+---
+
+# Python Testing Rules (offie)
+
+## Goals
+
+- **Meaningful tests**: Each test should add real value, not fluff.
+- **Descriptive names**: Test names describe behavior, result, and scenario.
+- **Robust fixtures**: Prefer inline data over brittle external files.
+
+## Test Naming
+
+- Use the pattern `method__results__action`.
+- Example:
+
+```python
+# ✅ GOOD
+def load_workflow__should_return_workflow__when_valid_path_is_passed():
+    ...
+```
+
+Guidelines:
+
+- **`method`**: The function or method under test (e.g. `load_workflow`).
+- **`results`**: The expected outcome (e.g. `should_return_parsed_model`).
+- **`action`**: The scenario/condition (e.g. `when_example_yaml_is_valid`).
+
+Avoid vague or redundant names:
+
+```python
+# ❌ BAD - too vague
+def test_load_workflow():
+    ...
+```
+
+## Test Value and Coverage
+
+- Write tests that assert meaningful behavior, not implementation details.
+- Avoid tests that only duplicate trivial logic (e.g. testing Python built-ins).
+- Prefer a few high-value tests over many shallow ones.
+- When adding a test, be clear about:
+  - The behavior under test.
+  - The expected result.
+  - Edge or error conditions that matter for correctness.
+
+## YAML and Workflow Fixtures
+
+- For unit tests, **prefer inline YAML strings** instead of repository files.
+
+```python
+inline_workflow_yaml = """
+steps:
+  - name: first_step
+    run: echo "hello"
+"""
+```
+
+- Only write to the filesystem (e.g. via `tmp_path`) when the production API
+  *requires* a file path. In those cases:
+  - Build the YAML as an inline string.
+  - Write it to a temp file within the test.
+  - Pass that temp file path to the code under test.
+
+- Avoid depending on fixed files like `workflows/example.yml` in unit tests to
+  keep tests resilient to content changes and folder shuffles.
+
+## Test Structure
+
+- Arrange tests using the Arrange–Act–Assert pattern:
+  - **Arrange**: set up input data and dependencies.
+  - **Act**: call the function or method under test.
+  - **Assert**: verify outcomes (return values, side effects, raised errors).
+
+- Prefer one main behavior per test. If you need to cover multiple scenarios,
+  write separate tests following the naming convention.
+

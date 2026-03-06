@@ -43,3 +43,23 @@ workflow:
       as: index
       do:
         - print: "Running a for loop: Current index is {{index}}"
+
+    # --- Nested control‑flow example ---
+    - set_variable: 0
+      as: counter
+    - while: "{{counter}} < 3"
+      do:
+        - print: "Outer while iteration, counter={{counter}}"
+        # A list we loop over each iteration
+        - set_variable: ["alpha", "beta", "gamma"]
+          as: items
+        - for_each: "{{items}}"
+          as: item
+          do:
+            - if: "{{item}} == 'beta'"
+              then:
+                - print: "  Found special item 'beta' at counter={{counter}}"
+              else:
+                - print: "  Regular item '{{item}}' at counter={{counter}}"
+        - set_variable: "{{counter}} + 1"
+          as: counter

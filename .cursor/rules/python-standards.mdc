@@ -1,0 +1,21 @@
+---
+description: Python coding standards and conventions for the offie project
+globs: **/*.py
+alwaysApply: false
+---
+
+# Python Standards (offie)
+
+## Goals
+
+- **Consistency**: Keep style and patterns consistent across modules.
+- **Clarity**: Prefer readable, explicit code over clever one-liners.
+- **Pragmatism**: Follow project rules over generic style advice when they differ.
+
+## General Guidelines
+
+- Prefer standard library and existing project utilities before adding new dependencies.
+- Keep functions small and focused; extract helpers when logic becomes complex.
+- Name modules, classes, and functions descriptively; avoid abbreviations that are not obvious.
+- Favor pure functions where possible for core logic, and keep side effects at the edges.
+

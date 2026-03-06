@@ -37,6 +37,16 @@ This will parse the workflow, validate it, and execute the steps while printing 
 
 ---
 
+## Tests
+
+Run the test suite with:
+
+```bash
+pytest
+```
+
+---
+
 ## YAML DSL Overview
 
 Workflows are defined under a top-level `workflow` key:
