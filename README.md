@@ -1,6 +1,6 @@
 ## Offie
 
-Offie is a small Python tool that executes workflows defined in a simple YAML-based DSL.  
+Offie is a small Python tool that executes workflows defined in a simple YAML-based DSL so you can describe and run automation as readable YAML files.  
 
 ---
 
@@ -27,13 +27,20 @@ cd offie
 pip install -e .
 ```
 
-4. **Run the example workflow**
+4. **Run the basic workflow**
 
 ```bash
-offie workflows/example.yml -p parameter_name_1=hello --parameter parameter_name_2=world
+offie workflows/basic_workflow.yml -p team_name="Platform" --parameter greeting="Good morning"
 ```
 
-This will parse the workflow, validate it, and execute the steps while printing output to your terminal.
+This parses the workflow, validates it, and executes each step while printing output to your terminal.
+
+---
+
+## What next
+
+- **Getting started tutorial**: [`docs/getting-started.md`](docs/getting-started.md) – install Offie, learn the CLI, and run the example workflow.
+- **Command reference**: explore available commands under [`docs/commands/`](docs/commands/).
 
 ---
 
@@ -53,18 +60,34 @@ Workflows are defined under a top-level `workflow` key:
 
 ```yaml
 workflow:
-  name: Example Base Workflow
-  description: Demo of control flow commands.
+  name: Basic Team Check-in
+  description: >
+    Example workflow that demonstrates parameters, workflow variables,
+    system variables, and nested control flow.
 
   parameters:
-    - parameter_name_1: parameter_description_1
-    - parameter_name_2: parameter_description_2
+    - team_name:
+        description: Name of the team running the check-in.
+        default: "Platform"
+    - greeting:
+        description: Greeting prefix used in messages.
+        default: "Hello"
 
   steps:
+    - set_variable: "{{sys.workflow_name}}"
+      as: workflow_name
+    - set_variable: "{{sys.workflow_file}}"
+      as: workflow_file
+    - set_variable: "{{sys.date}}"
+      as: run_date
+    - set_variable: "{{sys.time}}"
+      as: run_time
+    - print: "=== Running '{{workflow_name}}' from {{workflow_file}} ==="
+    - print: "Date: {{run_date}} Time: {{run_time}}"
     - set_variable:
-        value: Marc
-      as: name
-    - print: "Hello, {{name}}!"
+        value: '{{greeting}} + " " + {{team_name}} + " team!"'
+      as: welcome_message
+    - print: "{{welcome_message}}"
 ```
 
 - **Parameters** define top-level inputs that can be overridden via `-p/--parameter` on the CLI.

@@ -1,0 +1,86 @@
+workflow:
+  name: Basic Team Check-in
+  description: >
+    Example workflow that demonstrates parameters, workflow variables,
+    system variables, and nested control flow.
+
+  parameters:
+    - team_name:
+        description: Name of the team running the check-in.
+        default: "Platform"
+    - greeting:
+        description: Greeting prefix used in messages.
+        default: "Hello"
+    - attendees:
+        description: List of attendee names for the stand-up.
+        default: ["Marc", "John", "Jane", "Jim", "Jill"]
+
+  steps:
+    # Capture system information into workflow variables using expressions.
+    - set_variable: "{{sys.workflow_name}}"
+      as: workflow_name
+    - set_variable: "{{sys.workflow_file}}"
+      as: workflow_file
+    - set_variable: "{{sys.date}}"
+      as: run_date
+    - set_variable: "{{sys.time}}"
+      as: run_time
+    - set_variable: "{{sys.timestamp}}"
+      as: start_timestamp
+    - set_variable: "{{sys.cwd}}"
+      as: cwd
+
+    # Show basic system information using workflow variables.
+    - print: "=== Running '{{workflow_name}}' from {{workflow_file}} ==="
+    - print: "Date: {{run_date}} Time: {{run_time}} (cwd={{cwd}})"
+
+    # Build a welcome message using workflow parameters.
+    - set_variable: '{{greeting}} + " " + {{team_name}} + " team!"'
+      as: welcome_message
+    - print: "{{welcome_message}}"
+
+    # Greet each attendee using a for_each loop.
+    - set_variable:
+        value: "{{attendees}}"
+      as: people
+    - for_each: "{{people}}"
+      as: person
+      do:
+        - if: "{{person}} == 'Marc'"
+          then:
+            - print: "Special welcome to {{person}} from {{team_name}} (run on {{run_date}})."
+          else:
+            - print: "Checking in with {{person}} from {{team_name}}."
+
+    # Nested control-flow:
+    # - outer while loop over stand-up rounds
+    # - inner for_each over statuses
+    # - inner if inside the inner loop
+    - set_variable: 1
+      as: round
+    - while: "{{round}} <= 2"
+      do:
+        - print: "--- Stand-up round {{round}} for {{team_name}} on {{run_date}} ---"
+        - set_variable:
+            value: ["planning", "in_progress", "blocked"]
+          as: statuses
+        - for_each: "{{statuses}}"
+          as: status
+          do:
+            - if: "{{status}} == 'blocked'"
+              then:
+                - print: "  ALERT: A {{status}} item found in round {{round}}!"
+              else:
+                - print: "  Status '{{status}}' looks okay in round {{round}}."
+        - set_variable:
+            value: "{{round}} + 1"
+          as: round
+
+    # Finally, use a numeric for loop to print a short summary section.
+    - for:
+        start: 1
+        end: 4
+        as: index
+        do:
+          - print: "Summary line {{index}} for {{team_name}} (started at {{start_timestamp}})"
+
