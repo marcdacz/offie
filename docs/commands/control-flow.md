@@ -53,6 +53,8 @@ Commands covered here:
 
 - **Inline value / `value`** (required): loop condition expression.
 - **`do`** (required): list of steps to execute on each iteration.
+- **`max_iterations`** (optional): maximum number of iterations before the loop fails.  
+  Defaults to `1000` to protect against infinite loops; increase cautiously if you expect a long‑running loop.
 
 ---
 

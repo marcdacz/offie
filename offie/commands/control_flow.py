@@ -3,69 +3,20 @@ from __future__ import annotations
 from typing import Any, List, TYPE_CHECKING
 
 from offie.core.context import Context
-from offie.core.expressions import ExpressionEvaluator
 from offie.core.models import Step
 from .registry import BaseCommand, command
+from .utils import CommandWithEval
 
 
 if TYPE_CHECKING:  # pragma: no cover - type checking only
     from offie.core.executor import Executor
 
 
-_DEFAULT_MAX_WHILE_ITERATIONS = 10_000
-
-
-class _CommandWithEval(BaseCommand):
-    """
-    Mixin providing access to the expression evaluator.
-    """
-
-    def _eval(self, expression: str, context: Context, executor: "Executor") -> Any:
-        evaluator: ExpressionEvaluator = executor.expression_evaluator
-        return evaluator.evaluate(expression, context)
+_DEFAULT_MAX_WHILE_ITERATIONS = 1_000
 
 
 @command
-class PrintCommand(_CommandWithEval):
-    name = "print"
-    required_args: List[str] = []
-
-    def validate(self, step: Step) -> List[str]:
-        if "value" not in step.args and "message" not in step.args:
-            return ["print command requires either 'value' or 'message'"]
-        return []
-
-    def execute(self, step: Step, context: Context, executor: "Executor") -> None:
-        raw = step.args.get("message", step.args.get("value"))
-        rendered = context.render_template(raw)
-        print(rendered)
-
-
-@command
-class SetVariableCommand(_CommandWithEval):
-    name = "set_variable"
-    required_args = ["as"]
-
-    def validate(self, step: Step) -> List[str]:
-        errors: List[str] = []
-        if "as" not in step.args:
-            errors.append("set_variable requires an 'as' argument")
-        if "value" not in step.args:
-            errors.append("set_variable requires a 'value' argument")
-        return errors
-
-    def execute(self, step: Step, context: Context, executor: "Executor") -> None:
-        target = step.args["as"]
-        raw_value = step.args["value"]
-        if isinstance(raw_value, str) and "{{" in raw_value:
-            value = self._eval(raw_value, context, executor)
-        else:
-            value = raw_value
-        context.set(target, value)
-
-
-@command
-class IfCommand(_CommandWithEval):
+class IfCommand(CommandWithEval):
     name = "if"
     # Condition is always provided as the primary value.
     required_args = ["value"]
@@ -87,7 +38,7 @@ class IfCommand(_CommandWithEval):
 
 
 @command
-class WhileCommand(_CommandWithEval):
+class WhileCommand(CommandWithEval):
     name = "while"
     # Loop condition is always provided as the primary value.
     required_args = ["value", "do"]
@@ -103,9 +54,16 @@ class WhileCommand(_CommandWithEval):
     def execute(self, step: Step, context: Context, executor: "Executor") -> None:
         condition = step.args["value"]
         body = step.args.get("do") or []
+
+        max_iterations_expr = step.args.get("max_iterations")
+        if max_iterations_expr is None:
+            max_iterations = _DEFAULT_MAX_WHILE_ITERATIONS
+        else:
+            max_iterations = int(self._eval(str(max_iterations_expr), context, executor))
+
         iterations = 0
         while True:
-            if iterations >= _DEFAULT_MAX_WHILE_ITERATIONS:
+            if iterations >= max_iterations:
                 msg = "while loop exceeded maximum iterations"
                 raise RuntimeError(msg)
             if not bool(self._eval(condition, context, executor)):
@@ -115,7 +73,7 @@ class WhileCommand(_CommandWithEval):
 
 
 @command
-class ForCommand(_CommandWithEval):
+class ForCommand(CommandWithEval):
     name = "for"
     required_args = ["start", "end", "as", "do"]
 
@@ -134,7 +92,7 @@ class ForCommand(_CommandWithEval):
 
 
 @command
-class ForEachCommand(_CommandWithEval):
+class ForEachCommand(CommandWithEval):
     name = "for_each"
     required_args = ["value", "as", "do"]
 

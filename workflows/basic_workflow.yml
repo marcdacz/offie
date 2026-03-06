@@ -59,6 +59,7 @@ workflow:
     - set_variable: 1
       as: round
     - while: "{{round}} <= 2"
+      max_iterations: 1000
       do:
         - print: "--- Stand-up round {{round}} for {{team_name}} on {{run_date}} ---"
         - set_variable:
