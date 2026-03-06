@@ -42,6 +42,7 @@ class WhileCommand(CommandWithEval):
     name = "while"
     # Loop condition is always provided as the primary value.
     required_args = ["value", "do"]
+    optional_args = ["max_iterations"]
 
     def validate(self, step: Step) -> list[str]:
         errors: list[str] = []
