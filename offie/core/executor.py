@@ -21,13 +21,18 @@ class Executor:
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
-    def execute(self, workflow: Workflow, cli_parameters: dict[str, Any] | None = None) -> None:
+    def execute(
+        self,
+        workflow: Workflow,
+        cli_parameters: dict[str, Any] | None = None,
+        log_level: str = "info",
+    ) -> None:
         """
         Execute the workflow using the provided CLI parameter overrides.
         """
 
         parameters = cli_parameters or {}
-        context = self._build_context(workflow, parameters)
+        context = self._build_context(workflow, parameters, log_level)
         self.execute_steps(workflow.steps, context)
 
     def execute_steps(self, steps: Iterable[Step], context: Context) -> None:
@@ -41,12 +46,21 @@ class Executor:
     # ------------------------------------------------------------------
     # Internals
     # ------------------------------------------------------------------
-    def _build_context(self, workflow: Workflow, cli_parameters: dict[str, Any]) -> Context:
+    def _build_context(
+        self,
+        workflow: Workflow,
+        cli_parameters: dict[str, Any],
+        log_level: str = "info",
+    ) -> Context:
         """
         Build the initial Context from workflow parameters and CLI overrides.
         """
 
-        context = Context(workflow_name=workflow.name, workflow_file=workflow.source_path or "")
+        context = Context(
+            workflow_name=workflow.name,
+            workflow_file=workflow.source_path or "",
+            log_level=log_level,
+        )
 
         # Apply workflow parameter defaults, overridden by CLI values.
         defaults: dict[str, Any] = {}

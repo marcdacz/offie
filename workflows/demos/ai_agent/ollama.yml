@@ -1,0 +1,31 @@
+workflow:
+  name: AI Agent Demo
+  description: >
+    Demonstrates call_ai_agent with Ollama: asks the AI for structured JSON,
+    stores the result in a variable, and uses it in later steps.
+
+  parameters:
+    - topic:
+        description: Topic for the AI to analyze (e.g. "benefits of automated testing").
+        default: "benefits of automated testing"
+
+  steps:
+    - print: "=== AI Agent Demo (handler=ollama) ==="
+
+    - call_ai_agent:
+        handler: ollama
+        options:
+          model: qwen3:4b
+        prompt: |
+          Return a JSON object with exactly these keys (no other text):
+          - "summary": one short sentence about the topic
+          - "confidence": a number from 0 to 100
+          - "suggestions": an array of exactly 2 short strings (tips or takeaways)
+          Topic: {{topic}}
+      as: analysis
+
+    - print: "Summary: {{analysis.summary}}"
+    - print: "Confidence: {{analysis.confidence}}"
+    - print: "Suggestions: {{analysis.suggestions}}"
+    - print: "---"
+    - print: "Handler: {{analysis.__metadata.handler}} | Duration: {{analysis.__metadata.execution_duration}}"

@@ -1,0 +1,22 @@
+---
+description: When planning features or implementations, always include docs and tests
+alwaysApply: true
+---
+
+# Planning: Docs and Tests
+
+When you create or update a plan for a feature, refactor, or new capability:
+
+1. **Docs**
+   Include concrete doc updates in the plan. Follow existing project structure:
+   - Command/API docs: [docs/commands/](docs/commands/) (Purpose, Syntax, Arguments, Examples).
+   - CLI and getting started: [docs/getting-started.md](docs/getting-started.md).
+   - Add new command docs or extend existing command pages as appropriate.
+
+2. **Tests**
+   Include tests in the plan. Follow project standards:
+   - [.cursor/rules/python-testing.mdc](.cursor/rules/python-testing.mdc): naming `method__results__action`, inline data, Arrange–Act–Assert.
+   - [.cursor/rules/python-pytest.mdc](.cursor/rules/python-pytest.mdc): plain pytest, `pytest.raises`, parametrize where useful.
+   - Add or extend test files under [tests/](tests/) so new behavior is covered and regressions are avoided.
+
+List the specific doc files and test files (or test cases) to add or change in the "Files to touch" or "Docs" / "Tests" sections of the plan.

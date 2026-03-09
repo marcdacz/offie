@@ -19,7 +19,7 @@ cd offie
 pip install -e .
 ```
 
-This installs the `offie` CLI in your environment.
+This installs the `offie` CLI in your environment. Offie loads a `.env` file from the current working directory when it runs, so you can put API keys in `.env` instead of exporting them. See `.env.example` for a template.
 
 ---
 
@@ -35,6 +35,7 @@ offie WORKFLOW_FILE [OPTIONS]
 - **Parameters**:
   - `-p NAME=VALUE` or `--parameter NAME=VALUE`
   - May be passed multiple times to override workflow parameters.
+- **`--loglevel`**: minimum log level (`debug`, `info`, `warning`, `error`). Default: `info`. Controls which log messages appear (including the `log` command and handler progress such as Cursor agent steps).
 
 Example:
 
@@ -81,3 +82,4 @@ You should see:
 
 - Open `workflows/basic_workflow.yml` and tweak values (parameters, conditions, loops) to see how behavior changes.
 - Explore command docs under [`docs/commands/`](commands/) for details on available commands.
+- To try the AI agent command (requires [Ollama](https://ollama.com) running): run `workflows/ai_agent_demo.yml` and see [`commands/ai-agent.md`](commands/ai-agent.md).

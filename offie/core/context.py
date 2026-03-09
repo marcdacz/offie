@@ -19,6 +19,7 @@ class Context:
 
     workflow_name: str
     workflow_file: Path
+    log_level: str = "info"
     _system: dict[str, Any] = field(default_factory=dict, init=False, repr=False)
     _workflow: dict[str, Any] = field(default_factory=dict, repr=False)
 
@@ -130,15 +131,17 @@ class Context:
         else:
             current = dict(self._workflow)
 
-        for part in parts:
+        for i, part in enumerate(parts):
             if isinstance(current, dict) and part in current:
                 current = current[part]
             else:
-                # Fall back to top-level workflow variables if we started
-                # with the workflow mapping.
-                if parts[0] != "sys" and part in self._workflow:
+                # Fall back to top-level workflow variables only for the first part.
+                if parts[0] != "sys" and i == 0 and part in self._workflow:
                     current = self._workflow[part]
                     continue
+                # Missing nested key: return "".
+                if i > 0 and isinstance(current, dict):
+                    return ""
                 msg = f"Unknown variable '{name}' in template"
                 raise KeyError(msg)
 

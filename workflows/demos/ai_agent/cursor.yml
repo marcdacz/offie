@@ -1,0 +1,38 @@
+workflow:
+  name: AI Agent Demo (Cursor)
+  description: >
+    Demonstrates call_ai_agent with the Cursor Cloud Agents handler.
+    Requires CURSOR_API_KEY in the environment (or in .env).
+    The agent runs against a GitHub repo and returns structured JSON.
+
+  parameters:
+    - repo:
+        description: GitHub repository URL (e.g. https://github.com/your-org/your-repo).
+        default: "https://github.com/marcdacz/offie"
+    - ref:
+        description: Branch, tag, or commit to use (optional).
+        default: "main"
+
+  steps:
+    - print: "=== AI Agent Demo (handler=cursor) ==="
+
+    - call_ai_agent:
+        handler: cursor
+        prompt: |
+          Read the README.md file and return a JSON object with the following keys:
+          - "summary": one short sentence summarizing this repository
+          - "confidence": a number from 0 to 100
+        options:
+          source_repository: "{{repo}}"
+          ref: "{{ref}}"
+      as: analysis
+
+    - print: "Handler: {{analysis.__metadata.handler}} | Duration: {{analysis.__metadata.execution_duration}}"
+    - print: "Result:"
+    - if: "'summary' in analysis"
+      then:
+        - print: "Summary: {{analysis.summary}}"
+        - print: "Confidence: {{analysis.confidence}}"
+      else:
+        - print: "Could not extract structured JSON from agent response."
+        - print: "Raw response: {{analysis.response}}"

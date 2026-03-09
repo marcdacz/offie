@@ -25,4 +25,7 @@ Offie commands are grouped by purpose.
 - **Output**
   `print` – see [`commands/output.md`](commands/output.md).
 
+- **AI agent**
+  `call_ai_agent` – see [`commands/ai-agent.md`](commands/ai-agent.md).
+
 As new command groups are added, create a new file under `commands/` and link it here.

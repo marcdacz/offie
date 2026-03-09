@@ -69,3 +69,41 @@ def execute_step__should_raise_runtime_error__when_command_is_unknown(
         executor.execute(workflow)
 
     assert "Unknown command 'does_not_exist'" in str(excinfo.value)
+
+
+def execute_workflow__should_show_log_when_log_level_equals_message_level(
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+) -> None:
+    workflow = Workflow(
+        name="executor-log",
+        description=None,
+        parameters=[],
+        steps=[
+            Step(command="log", args={"message": "From executor", "level": "info"}),
+        ],
+        source_path=tmp_path / "inline.yml",
+    )
+    executor = Executor()
+    executor.execute(workflow, log_level="info")
+    captured = capsys.readouterr()
+    assert "From executor" in captured.out
+
+
+def execute_workflow__should_not_show_log__when_log_level_more_restrictive_than_message(
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+) -> None:
+    workflow = Workflow(
+        name="executor-log-hidden",
+        description=None,
+        parameters=[],
+        steps=[
+            Step(command="log", args={"message": "Hidden", "level": "info"}),
+        ],
+        source_path=tmp_path / "inline.yml",
+    )
+    executor = Executor()
+    executor.execute(workflow, log_level="error")
+    captured = capsys.readouterr()
+    assert "Hidden" not in captured.out

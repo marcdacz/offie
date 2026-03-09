@@ -4,6 +4,8 @@ import argparse
 import sys
 from typing import Any
 
+from dotenv import load_dotenv
+
 from offie.core.executor import Executor
 from offie.core.parser import load_workflow
 from offie.core.validator import ValidationError, validate_workflow
@@ -35,10 +37,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
         metavar="KEY=VALUE",
         help="Override a top-level workflow parameter (can be used multiple times)",
     )
+    parser.add_argument(
+        "--loglevel",
+        choices=["debug", "info", "warning", "error"],
+        default="info",
+        help="Minimum log level (debug, info, warning, error)",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
+
     parser = build_arg_parser()
     args = parser.parse_args(argv)
 
@@ -59,7 +69,11 @@ def main(argv: list[str] | None = None) -> int:
 
     executor = Executor()
     try:
-        executor.execute(workflow, cli_parameters=parameter_overrides)
+        executor.execute(
+            workflow,
+            cli_parameters=parameter_overrides,
+            log_level=args.loglevel,
+        )
     except Exception as exc:
         print(f"Workflow execution failed: {exc}", file=sys.stderr)
         return 1
